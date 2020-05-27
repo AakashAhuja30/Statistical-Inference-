@@ -1,0 +1,60 @@
+---
+title: "Question4"
+author: "Aakash Ahuja"
+date: "10/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+ Consider an urn that contains 10 tickets, labelled
+
+{1, 1, 1, 1, 2, 5, 5, 10, 10, 10}.
+
+```{r}
+urn_data<-c(1, 1, 1, 1, 2, 5, 5, 10, 10, 10)
+```
+
+**a)From this urn, I propose to draw (with replacement) n = 40 tickets. I am interested in the sum, Y , of the 40 ticket values that I draw.**
+
+```{r}
+urn.model<-function(x,n){
+  sampled_data<-sample(x,size = n, replace = T)
+  sum_temp<-sum(sampled_data)
+  return(sum_temp)
+}
+final_result<-urn.model(urn_data,40)
+#The sum is:
+final_result
+
+```
+
+**b) Use urn.model to generate a sample, y??? = {y 1 , . . . , y 25 }, of n = 25 observed sums. The random variable Y is discrete. Does it appear that the distribution of Y can be approximated by a normal distribution? Why or why not?**
+
+```{r}
+sums<-replicate(25,urn.model(urn_data,40))
+sums.df<-data.frame(sums)
+library(ggplot2)
+ggplot(sums.df, aes(sample=sums.df$sums))+ stat_qq()
+temp31<-IQR(sums)
+temp32<-sd(sums)
+temp31/temp32
+
+#Running for large number of samples
+sums_temp<-replicate(20000,urn.model(urn_data,40))
+sums.df_temp<-data.frame(sums_temp)
+library(ggplot2)
+ggplot(sums.df_temp, aes(sample=sums.df_temp$sums_temp))+ stat_qq()
+temp31_temp<-IQR(sums_temp)
+temp32_temp<-sd(sums_temp)
+temp31_temp/temp32_temp
+
+```
+
+**Answer: No, it cannot be appoximated for a normal distribution with just 25 simulations of the sums_function. Because with such a small sample size the IQR to Standard deviation ratio is hardly ever coming out to be close to 1.35. However if we run this simulation a large number of times like 20,000 times, then the qqplot is closely following a straight line and the ratio of IQR to SD is also close to 1.35(1.36 to be precise). So then it can be said that it is approximately following a normal distribution. **
+
+

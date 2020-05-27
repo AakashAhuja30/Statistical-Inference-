@@ -1,0 +1,84 @@
+---
+title: "Question1 Exercise 7.7"
+author: "Aakash Ahuja"
+date: "10/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The data
+
+The Data was scanned from the official webpage of Prof. Trosset
+
+http://mypage.iu.edu/~mtrosset/StatInfeR/Data/sample771.dat
+
+```{r}
+Question2Data<-scan("http://mypage.iu.edu/~mtrosset/StatInfeR/Data/sample771.dat")
+#Converting it into a dataframe
+Question2Data.df<-data.frame(Question2Data)
+```
+
+**a) The Emperical CDF:**
+``` {r}
+library(ggplot2)
+plot2<-ggplot(Question2Data.df, aes(x = Question2Data.df$Question2Data))
+plot2 + stat_ecdf() + ylab("Empirical CDF") + xlab("Data")
+```
+
+
+**b) Plug-in Estimates of Population Mean & Variance :**
+``` {r}
+population_mean<-mean(Question2Data.df$Question2Data)
+population_variance<-var(Question2Data.df$Question2Data)
+```
+
+**Ans: The Population mean is: 494.6**
+**The Population variance is: 94873.666**
+
+**c) Compute the plug-in estimates of the population median and interquartile range.**
+
+``` {r}
+Population_median<-as.integer(quantile(Question2Data.df$Question2Data,0.50))
+Q1<-as.integer(quantile(Question2Data.df$Question2Data,0.25))
+Q3<-as.integer(quantile(Question2Data.df$Question2Data,0.75))
+IQR_2<-Q3-Q1
+```
+
+**Ans: The Population Median is: 462**
+**The Population Interquartile Range is: 433**
+
+**d) Compute the ratio of the plug-in estimate of the interquartile range to the square root of the plug-in estimate of the variance.**
+``` {r}
+Ratio_IQR_SD<-(IQR_2)/(sqrt(population_variance))
+```
+
+**Ans: The ratio is : 1.41 which says that the data is not exactly normally distributed as the ratio should have been 1.35 for it to be normally distributed. But since it is close to 1.35, for large sample size it can closely resemble a normal distribution. **
+
+**(e) Construct a boxplot.**
+``` {r}
+ggplot(data = Question2Data.df, aes(x = "", y = Question2Data)) + geom_boxplot() 
+```
+
+**(f) Construct a Normal Probability Plot**
+``` {r}
+ggplot(Question2Data.df, aes(sample=Question2Data))+ stat_qq()
+
+```
+
+**Ans: This doesn't look like normal distribution since the points deviate a lot from the line y=x. We also established this from the IQR and SD Ratio above.**
+
+**(g) Construct a kernel density estimate.**
+``` {r}
+plot2+geom_density()+ylab("Estimated PDF")+xlab("x")+ggtitle("Density Plot")
+```
+
+**(h) Do you think that this sample was drawn from a normal distribution? Why or why not?**
+
+**Answer: No I do not think this sample was drawn from a normal distribution since the IQR/SD Ratio is greater than 1.35(1.41 to be precise). Also the QQ plot for the sample doesn't follow the line y=x. But for a large sample since it is close to 1.35, it can closely resemble normal distribution.**
+
+
+
+
